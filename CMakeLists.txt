@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(zip_enum VERSION 1.1.0 
+set(version 1.1.0)
+
+project(zip_enum VERSION ${version}
     DESCRIPTION "zip, enumerate for range-based for statement" 
     LANGUAGES CXX)
 
@@ -15,8 +17,8 @@ target_include_directories(ZipEnum INTERFACE
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/ZipEnumVersion.cmake
-  VERSION 1.1.0
+  ${CMAKE_CURRENT_BINARY_DIR}/ZipEnumConfigVersion.cmake
+  VERSION ${version}
   COMPATIBILITY SameMajorVersion )
 
 ##################################
@@ -36,6 +38,6 @@ install(FILES
 )
 
 install(FILES 
-    ${CMAKE_CURRENT_BINARY_DIR}/ZipEnumVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/ZipEnumConfigVersion.cmake
     DESTINATION lib/cmake/ZipEnum
 )

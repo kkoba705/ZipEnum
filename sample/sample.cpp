@@ -11,7 +11,7 @@
 #include <ZipEnum.hpp>
 using zip_enum::zip, zip_enum::enumerate;
 
-auto itoa(int n) {
+auto iota(int n) {
     std::vector<int> r(n);
     for (int i=0; i < n; i++) {
         r[i] = i;
@@ -21,10 +21,9 @@ auto itoa(int n) {
 
 int main() {
 
-    auto I = itoa(10);
-    for (auto [n, k] : enumerate(itoa(10))) {
+    {auto&& I = iota(10); for (auto [n, k] : enumerate(I)) {
         std::cout << n << ", " << k << std::endl;
-    }
+    }}
     
     std::vector<int> A = {1, -2, 4};
     std::set<std::string> B;
