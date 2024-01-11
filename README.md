@@ -1,4 +1,5 @@
 # 解説
+C++ で python の enumerate, zip 表記を使う。
 
 https://qiita.com/kkoba775/items/1849eaecf47789be4921
 
