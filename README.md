@@ -42,7 +42,7 @@ int main() {
     return 0;
 }
 ```
-```CMakeLists.txt
+```cmake
 cmake_minimum_required(VERSION 3.21)
 set(exename "sample")
 project(${exename} CXX)
