@@ -18,7 +18,7 @@ Windows (Visual Studio 2022) なら、適当な作業用ディレクトリから
 
 Ubuntu なら ```$ cmake -DCMAKE_INSTALL_PREFIX=$HOME/dev/ZipEnum ..``` に変更。
 ```~/.bashrc``` の最後に```export CMAKE_PREFIX_PATH=$HOME/dev``` もしくは
-```export ZipEnum_DIR=$HOME/dev/ZipEnum``` を追加する。
+```export ZipEnum_DIR=$HOME/dev``` を追加する。
 
 # 使用例
 
