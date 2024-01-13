@@ -14,7 +14,7 @@ Windows (Visual Studio 2022) なら、適当な作業用ディレクトリから
 > cmake --build . --target install
 ```
 として ```c:\dev\ZipEnum``` にインストールできる。
-環境変数 ```CMAKE_PREFIX_PATH``` に ```c:\dev``` を登録するか、環境変数 ```ZipEnum_DIR``` に ```c:\dev\ZipEnum``` を登録する。
+環境変数 ```CMAKE_PREFIX_PATH``` もしくは ```ZipEnum_DIR``` に ```c:\dev``` を登録する。
 
 Ubuntu なら ```$ cmake -DCMAKE_INSTALL_PREFIX=$HOME/dev/ZipEnum ..``` に変更。
 ```~/.bashrc``` の最後に```export CMAKE_PREFIX_PATH=$HOME/dev``` もしくは
