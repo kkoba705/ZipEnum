@@ -6,6 +6,7 @@
 
 #include <utility>
 #include <memory>
+#include <tuple>
 #include <type_traits>
 
 namespace zip_enum {
