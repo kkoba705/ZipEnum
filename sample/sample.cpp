@@ -21,9 +21,9 @@ auto iota(int n) {
 
 int main() {
 
-    {auto&& I = iota(10); for (auto [n, k] : enumerate(I)) {
+    for (auto [n, k] : enumerate(iota(10))) {
         std::cout << n << ", " << k << std::endl;
-    }}
+    }
     
     std::vector<int> A = {1, -2, 4};
     std::set<std::string> B;
@@ -34,12 +34,17 @@ int main() {
     std::array<double, 3> C = {1.5, 2.2, 3.14};
 
 
-    for (auto [n, s, d] : zip(A, B, C)) {
-        std::cout << n << ", " << s << ", " << d << std::endl;
+    for (auto [n, b, c] : zip(A, B, C)) {
+        std::cout << n << ", " << b << ", " << c << std::endl;
     }    
 
-    for (auto [i, n, s] : enumerate(A, B)) {
-        std::cout << "[" << i << "] " << s << std::endl;
+    for (auto [i, n] : enumerate(zip(A, B))) {
+        std::cout << "[" << i << "] " << n.first << ", " << n.second << std::endl;
+        n.first += -1;
+    }
+
+    for (auto [i, a, b] : enumerate(A, B)) {
+        std::cout << "[" << i << "] " << a << ", " << b << std::endl;
     }
 
     return 0;
