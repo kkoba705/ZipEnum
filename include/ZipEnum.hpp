@@ -12,9 +12,6 @@ namespace zip_enum {
 
 template<class T1, class T2>
 struct Zip {
-    using C1 = std::remove_reference_t<T1>;
-    using C2 = std::remove_reference_t<T2>;
-
     T1 c1_;
     T2 c2_;
 
@@ -69,10 +66,6 @@ inline auto zip(T1 && a, T2 && b) {
 
 template<class T1, class T2, class T3>
 struct Zip3 {
-    using C1 = std::remove_reference_t<T1>;
-    using C2 = std::remove_reference_t<T2>;
-    using C3 = std::remove_reference_t<T3>;
-
     T1 c1_;
     T2 c2_;
     T3 c3_;
@@ -136,7 +129,6 @@ inline auto zip(T1 && a, T2 && b, T3 && c) {
 
 template<class T, class Int = int>
 struct Enumerate {
-    using C = std::remove_reference_t<T>;
     T c_;
 
     explicit Enumerate(T && c) : c_(std::forward<T>(c)) {}
@@ -178,9 +170,6 @@ struct Enumerate {
 
 template<class T1, class T2, class Int = int>
 struct Enumerate2 {
-    using C1 = std::remove_reference_t<T1>;
-    using C2 = std::remove_reference_t<T2>;
-
     T1 c1_;
     T2 c2_;
 
