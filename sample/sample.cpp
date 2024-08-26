@@ -31,8 +31,7 @@ int main() {
     B.insert("z");
     B.insert("b");
 
-    std::array<double, 3> C = {1.5, 2.2, 3.14};
-
+    std::array<double, 3> C = {1.5, -2.2, 3.14};
 
     for (auto [n, b, c] : zip(A, B, C)) {
         std::cout << n << ", " << b << ", " << c << std::endl;

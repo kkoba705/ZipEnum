@@ -16,28 +16,16 @@ struct Zip {
     using C1 = std::remove_reference_t<T1>;
     using C2 = std::remove_reference_t<T2>;
 
-    std::conditional_t<std::is_lvalue_reference_v<T1>, 
-        C1*, std::unique_ptr<C1>> c1_;
-    std::conditional_t<std::is_lvalue_reference_v<T2>, 
-        C2*, std::unique_ptr<C2>> c2_;
+    std::conditional_t<std::is_lvalue_reference_v<T1>, C1&, C1> c1_;
+    std::conditional_t<std::is_lvalue_reference_v<T2>, C2&, C2> c2_;
 
-    using iterator1 = decltype(c1_->begin());
-    using iterator2 = decltype(c2_->begin());
-    using terminator1 = decltype(c1_->end());
-    using terminator2 = decltype(c2_->end());
+    using iterator1 = decltype(c1_.begin());
+    using iterator2 = decltype(c2_.begin());
+    using terminator1 = decltype(c1_.end());
+    using terminator2 = decltype(c2_.end());
 
-    Zip(T1 && c1, T2 && c2) {
-        if constexpr (std::is_lvalue_reference_v<T1>) {
-            c1_ = &c1;
-        } else {
-            c1_ = std::make_unique<C1>(std::move(c1));
-        }
-        if constexpr (std::is_lvalue_reference_v<T2>) {
-            c2_ = &c2;
-        } else {
-            c2_ = std::make_unique<C2>(std::move(c2));
-        }
-    }
+    Zip(T1 && c1, T2 && c2)  : 
+        c1_(std::forward<T1>(c1)), c2_(std::forward<T2>(c2)) {}
 
     struct terminator {
         terminator1 t1_;
@@ -67,11 +55,11 @@ struct Zip {
     };
 
     auto begin() {
-        return iterator {c1_->begin(), c2_->begin()};
+        return iterator {c1_.begin(), c2_.begin()};
     }
 
     auto end() {
-        return terminator {c1_->end(), c2_->end()};
+        return terminator {c1_.end(), c2_.end()};
     }
 };
 
@@ -86,43 +74,19 @@ struct Zip3 {
     using C2 = std::remove_reference_t<T2>;
     using C3 = std::remove_reference_t<T3>;
 
-    C1 *c1_ = nullptr;
-    C2 *c2_ = nullptr;
-    C3 *c3_ = nullptr;
-    std::unique_ptr<C1> u1_;
-    std::unique_ptr<C2> u2_;
-    std::unique_ptr<C3> u3_;
+    std::conditional_t<std::is_lvalue_reference_v<T1>, C1&, C1> c1_;
+    std::conditional_t<std::is_lvalue_reference_v<T2>, C2&, C2> c2_;
+    std::conditional_t<std::is_lvalue_reference_v<T3>, C3&, C3> c3_;
 
-    using iterator1 = decltype(c1_->begin());
-    using iterator2 = decltype(c2_->begin());
-    using iterator3 = decltype(c3_->begin());
-    using terminator1 = decltype(c1_->end());
-    using terminator2 = decltype(c2_->end());
-    using terminator3 = decltype(c3_->end());
+    using iterator1 = decltype(c1_.begin());
+    using iterator2 = decltype(c2_.begin());
+    using iterator3 = decltype(c3_.begin());
+    using terminator1 = decltype(c1_.end());
+    using terminator2 = decltype(c2_.end());
+    using terminator3 = decltype(c3_.end());
 
-    Zip3(T1 && c1, T2 && c2, T3 && c3) {
-        if constexpr (std::is_lvalue_reference_v<T1>) {
-            c1_ = &c1;
-        }
-        else {
-            u1_ = std::make_unique<C1>(std::move(c1));
-            c1_ = u1_.get();
-        }
-        if constexpr (std::is_lvalue_reference_v<T2>) {
-            c2_ = &c2;
-        }
-        else {
-            u2_ = std::make_unique<C2>(std::move(c2));
-            c2_ = u2_.get();
-        }
-        if constexpr (std::is_lvalue_reference_v<T3>) {
-            c3_ = &c3;
-        }
-        else {
-            u3_ = std::make_unique<C3>(std::move(c3));
-            c3_ = u3_.get();
-        }
-    }
+    Zip3(T1 && c1, T2 && c2, T3 && c3) :
+        c1_(std::forward<T1>(c1)), c2_(std::forward<T2>(c2)) , c3_(std::forward<T3>(c3)) {}
 
     struct terminator {
         terminator1 t1_;
@@ -156,11 +120,11 @@ struct Zip3 {
     };
 
     auto begin() {
-        return iterator {c1_->begin(), c2_->begin(), c3_->begin()};
+        return iterator {c1_.begin(), c2_.begin(), c3_.begin()};
     }
 
     auto end() {
-        return terminator {c1_->end(), c2_->end(), c3_->end()};
+        return terminator {c1_.end(), c2_.end(), c3_.end()};
     }
 };
 
@@ -174,19 +138,12 @@ inline auto zip(T1 && a, T2 && b, T3 && c) {
 template<class T, class Int = int>
 struct Enumerate {
     using C = std::remove_reference_t<T>;
-    std::conditional_t<std::is_lvalue_reference_v<T>, 
-        C*, std::unique_ptr<C>> c_;
+    std::conditional_t<std::is_lvalue_reference_v<T>, C&, C> c_;
 
-    explicit Enumerate(T && c) {
-        if constexpr (std::is_lvalue_reference_v<T>) {
-            c_ = &c;
-        } else {
-            c_ = std::make_unique<C>(std::move(c));
-        }
-    }
+    explicit Enumerate(T && c) : c_(std::forward<T>(c)) {}
 
-    using Iterator = decltype(c_->begin());
-    using Terminator = decltype(c_->end());
+    using Iterator = decltype(c_.begin());
+    using Terminator = decltype(c_.end());
 
     struct iterator {
         Iterator i_;
@@ -212,11 +169,11 @@ struct Enumerate {
     };
 
     auto begin() {
-        return iterator(c_->begin());
+        return iterator(c_.begin());
     }
 
     auto end() {
-        return c_->end();
+        return c_.end();
     }
 };
 
@@ -225,28 +182,16 @@ struct Enumerate2 {
     using C1 = std::remove_reference_t<T1>;
     using C2 = std::remove_reference_t<T2>;
 
-    std::conditional_t<std::is_lvalue_reference_v<T1>, 
-        C1*, std::unique_ptr<C1>> c1_;
-    std::conditional_t<std::is_lvalue_reference_v<T2>, 
-        C2*, std::unique_ptr<C2>> c2_;
+    std::conditional_t<std::is_lvalue_reference_v<T1>, C1&, C1> c1_;
+    std::conditional_t<std::is_lvalue_reference_v<T2>, C2&, C2> c2_;
 
-    Enumerate2(T1 && c1, T2 && c2) {
-        if constexpr (std::is_lvalue_reference_v<T1>) {
-            c1_ = &c1;
-        } else {
-            c1_ = std::make_unique<C1>(std::move(c1));
-        }
-        if constexpr (std::is_lvalue_reference_v<T2>) {
-            c2_ = &c2;
-        } else {
-            c2_ = std::make_unique<C2>(std::move(c2));
-        }
-    }
+    Enumerate2(T1 && c1, T2 && c2) : 
+        c1_(std::forward<T1>(c1)), c2_(std::forward<T2>(c2)) {}
 
-    using Iterator1 = decltype(c1_->begin());
-    using Iterator2 = decltype(c2_->begin());
-    using Terminator1 = decltype(c1_->end());
-    using Terminator2 = decltype(c2_->end());
+    using Iterator1 = decltype(c1_.begin());
+    using Iterator2 = decltype(c2_.begin());
+    using Terminator1 = decltype(c1_.end());
+    using Terminator2 = decltype(c2_.end());
 
     struct terminator {
         Terminator1 t1_;
@@ -278,11 +223,11 @@ struct Enumerate2 {
     };
 
     auto begin() {
-        return iterator {c1_->begin(), c2_->begin()};
+        return iterator {c1_.begin(), c2_.begin()};
     }
 
     auto end() {
-        return terminator {c1_->end(), c2_->end()};
+        return terminator {c1_.end(), c2_.end()};
     }
 };
 
