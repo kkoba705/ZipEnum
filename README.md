@@ -1,6 +1,6 @@
 C++ で python の enumerate, zip 表記を使う。
 
-解説記事　https://qiita.com/kkoba775/items/991f2d7bc6d04568597e
+解説記事　https://qiita.com/kkoba775/items/c916ede0c50ec9b7aa04
 
 # install
 
