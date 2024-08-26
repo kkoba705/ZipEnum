@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef __cpp_lib_type_trait_variable_templates
-#error C++17 or later is required.
-#endif
-
 #include <utility>
 #include <tuple>
 #include <type_traits>
