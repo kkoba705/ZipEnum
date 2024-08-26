@@ -14,10 +14,10 @@ target_include_directories(ZipEnum INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 
-set(CMAKE_CXX_STANDARD 17)
-
-add_executable(sample sample/sample.cpp)
-target_link_libraries(sample ZipEnum)
+# set(CMAKE_CXX_STANDARD 17)
+#
+# add_executable(sample sample/sample.cpp)
+# target_link_libraries(sample ZipEnum)
 
 
 include(CMakePackageConfigHelpers)
