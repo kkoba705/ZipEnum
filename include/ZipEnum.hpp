@@ -5,7 +5,6 @@
 #endif
 
 #include <utility>
-#include <memory>
 #include <tuple>
 #include <type_traits>
 
@@ -16,8 +15,8 @@ struct Zip {
     using C1 = std::remove_reference_t<T1>;
     using C2 = std::remove_reference_t<T2>;
 
-    std::conditional_t<std::is_lvalue_reference_v<T1>, C1&, C1> c1_;
-    std::conditional_t<std::is_lvalue_reference_v<T2>, C2&, C2> c2_;
+    T1 c1_;
+    T2 c2_;
 
     using iterator1 = decltype(c1_.begin());
     using iterator2 = decltype(c2_.begin());
@@ -74,9 +73,9 @@ struct Zip3 {
     using C2 = std::remove_reference_t<T2>;
     using C3 = std::remove_reference_t<T3>;
 
-    std::conditional_t<std::is_lvalue_reference_v<T1>, C1&, C1> c1_;
-    std::conditional_t<std::is_lvalue_reference_v<T2>, C2&, C2> c2_;
-    std::conditional_t<std::is_lvalue_reference_v<T3>, C3&, C3> c3_;
+    T1 c1_;
+    T2 c2_;
+    T3 c3_;
 
     using iterator1 = decltype(c1_.begin());
     using iterator2 = decltype(c2_.begin());
@@ -138,7 +137,7 @@ inline auto zip(T1 && a, T2 && b, T3 && c) {
 template<class T, class Int = int>
 struct Enumerate {
     using C = std::remove_reference_t<T>;
-    std::conditional_t<std::is_lvalue_reference_v<T>, C&, C> c_;
+    T c_;
 
     explicit Enumerate(T && c) : c_(std::forward<T>(c)) {}
 
@@ -182,8 +181,8 @@ struct Enumerate2 {
     using C1 = std::remove_reference_t<T1>;
     using C2 = std::remove_reference_t<T2>;
 
-    std::conditional_t<std::is_lvalue_reference_v<T1>, C1&, C1> c1_;
-    std::conditional_t<std::is_lvalue_reference_v<T2>, C2&, C2> c2_;
+    T1 c1_;
+    T2 c2_;
 
     Enumerate2(T1 && c1, T2 && c2) : 
         c1_(std::forward<T1>(c1)), c2_(std::forward<T2>(c2)) {}
