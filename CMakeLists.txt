@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-set(version 1.2.1)
+set(version 1.2.2)
 
 project(zip_enum VERSION ${version}
     DESCRIPTION "zip, enumerate for range-based for statement" 
