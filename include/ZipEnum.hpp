@@ -64,9 +64,7 @@ inline auto zip(T1 && a, T2 && b) {
 template <typename ... A, typename ... E, std::size_t ... Index>
 inline bool iterator_cmp(std::tuple<A...> const& a, std::tuple<E...> const& end, 
     std::index_sequence<Index...>) {
-    bool r = true;
-    r = (... && (std::get<Index>(a) != std::get<Index>(end)));
-    return r;
+    return (true && ... && (std::get<Index>(a) != std::get<Index>(end)));
 }
 
 template<typename ... T>
@@ -79,24 +77,22 @@ struct ZipN {
 
     ZipN(T && ... c)  : c_{std::forward<T>(c) ...} {}
 
-    struct terminator {
-        terminators t_;
-    };
-
     struct iterator {
         iterators i_;
 
-        bool operator!=(terminator const& a) const {
-            return iterator_cmp(i_, a.t_, std::index_sequence_for<T...>{});
+        bool operator!=(terminators const& a) const {
+            return iterator_cmp(i_, a, std::index_sequence_for<T...>{});
         }
 
         values operator*() const {
             return std::apply([](auto && ... args){
-                return values(*args...);}, i_);
+                return values(*args...);
+            }, i_);
         }
 
         iterator& operator++() {std::apply([](auto && ... args){
-            ((++args), ...); }, i_);
+                ((++args), ...); 
+            }, i_);
             return *this;
         }
     };
@@ -107,10 +103,10 @@ struct ZipN {
         }, c_)};
     }
 
-    terminator end() {
-        return {std::apply([](auto && ... args){
+    auto end() {
+        return std::apply([](auto && ... args){
             return terminators(std::end(args)...);
-        }, c_)};
+        }, c_);
     }
 };
 
