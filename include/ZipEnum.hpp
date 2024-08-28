@@ -165,8 +165,8 @@ inline auto enumerate(T && a) {
 template<typename Int = int>
 struct counter {
     Int c_ = 0;
-    auto begin() {return counter{0};}
-    auto end() {return counter{};}
+    auto begin() const {return counter{0};}
+    auto end() const {return counter{};}
     auto operator*() const {return c_;}
     void operator++() {++c_; }
     bool operator!=(counter) const {return true;}
