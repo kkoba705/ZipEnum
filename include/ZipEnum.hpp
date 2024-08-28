@@ -11,10 +11,10 @@ struct Zip {
     T1 c1_;
     T2 c2_;
 
-    using iterator1 = decltype(c1_.begin());
-    using iterator2 = decltype(c2_.begin());
-    using terminator1 = decltype(c1_.end());
-    using terminator2 = decltype(c2_.end());
+    using iterator1 = decltype(std::begin(c1_));
+    using iterator2 = decltype(std::begin(c2_));
+    using terminator1 = decltype(std::end(c1_));
+    using terminator2 = decltype(std::end(c2_));
 
     Zip(T1 && c1, T2 && c2)  : 
         c1_(std::forward<T1>(c1)), c2_(std::forward<T2>(c2)) {}
@@ -47,11 +47,11 @@ struct Zip {
     };
 
     auto begin() {
-        return iterator {c1_.begin(), c2_.begin()};
+        return iterator {std::begin(c1_), std::begin(c2_)};
     }
 
     auto end() {
-        return terminator {c1_.end(), c2_.end()};
+        return terminator {std::end(c1_), std::end(c2_)};
     }
 };
 
@@ -66,12 +66,12 @@ struct Zip3 {
     T2 c2_;
     T3 c3_;
 
-    using iterator1 = decltype(c1_.begin());
-    using iterator2 = decltype(c2_.begin());
-    using iterator3 = decltype(c3_.begin());
-    using terminator1 = decltype(c1_.end());
-    using terminator2 = decltype(c2_.end());
-    using terminator3 = decltype(c3_.end());
+    using iterator1 = decltype(std::begin(c1_));
+    using iterator2 = decltype(std::begin(c2_));
+    using iterator3 = decltype(std::begin(c3_));
+    using terminator1 = decltype(std::end(c1_));
+    using terminator2 = decltype(std::end(c2_));
+    using terminator3 = decltype(std::end(c3_));
 
     Zip3(T1 && c1, T2 && c2, T3 && c3) :
         c1_(std::forward<T1>(c1)), c2_(std::forward<T2>(c2)) , c3_(std::forward<T3>(c3)) {}
@@ -108,11 +108,11 @@ struct Zip3 {
     };
 
     auto begin() {
-        return iterator {c1_.begin(), c2_.begin(), c3_.begin()};
+        return iterator {std::begin(c1_), std::begin(c2_), std::begin(c3_)};
     }
 
     auto end() {
-        return terminator {c1_.end(), c2_.end(), c3_.end()};
+        return terminator {std::end(c1_), std::end(c2_), std::end(c3_)};
     }
 };
 
@@ -129,8 +129,8 @@ struct Enumerate {
 
     explicit Enumerate(T && c) : c_(std::forward<T>(c)) {}
 
-    using Iterator = decltype(c_.begin());
-    using Terminator = decltype(c_.end());
+    using Iterator = decltype(std::begin(c_));
+    using Terminator = decltype(std::end(c_));
 
     struct iterator {
         Iterator i_;
@@ -156,11 +156,11 @@ struct Enumerate {
     };
 
     auto begin() {
-        return iterator(c_.begin());
+        return iterator(std::begin(c_));
     }
 
     auto end() {
-        return c_.end();
+        return std::end(c_);
     }
 };
 
@@ -172,10 +172,10 @@ struct Enumerate2 {
     Enumerate2(T1 && c1, T2 && c2) : 
         c1_(std::forward<T1>(c1)), c2_(std::forward<T2>(c2)) {}
 
-    using Iterator1 = decltype(c1_.begin());
-    using Iterator2 = decltype(c2_.begin());
-    using Terminator1 = decltype(c1_.end());
-    using Terminator2 = decltype(c2_.end());
+    using Iterator1 = decltype(std::begin(c1_));
+    using Iterator2 = decltype(std::begin(c2_));
+    using Terminator1 = decltype(std::end(c1_));
+    using Terminator2 = decltype(std::end(c2_));
 
     struct terminator {
         Terminator1 t1_;
@@ -207,11 +207,11 @@ struct Enumerate2 {
     };
 
     auto begin() {
-        return iterator {c1_.begin(), c2_.begin()};
+        return iterator {std::begin(c1_), std::begin(c2_)};
     }
 
     auto end() {
-        return terminator {c1_.end(), c2_.end()};
+        return terminator {std::end(c1_), std::end(c2_)};
     }
 };
 

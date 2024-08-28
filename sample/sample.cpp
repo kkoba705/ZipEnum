@@ -37,9 +37,12 @@ int main() {
         std::cout << n << ", " << b << ", " << c << std::endl;
     }    
 
-    for (auto [i, n] : enumerate(zip(A, B))) {
-        std::cout << "[" << i << "] " << n.first << ", " << n.second << std::endl;
-        n.first += -1;
+    const double D[3] = {1.2, -0.1, 5};
+
+    for (auto [i, z] : enumerate(zip(A, D))) {
+        auto [a, d] = z; 
+        std::cout << "[" << i << "] " << a << ", " << d << std::endl;
+        a += -1;
     }
 
     for (auto [i, a, b] : enumerate(A, B)) {
