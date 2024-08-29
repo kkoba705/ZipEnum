@@ -71,9 +71,9 @@ template<typename ... T>
 struct ZipN {
     std::tuple<T...> c_;
 
-    using iterators = std::tuple<decltype(std::begin(std::declval<T>())) ...>;
-    using terminators = std::tuple<decltype(std::end(std::declval<T>())) ...>;
-    using values = std::tuple<decltype(*std::begin(std::declval<T>())) ...>;
+    using iterators = std::tuple<decltype(std::begin(std::declval<T&>())) ...>;
+    using terminators = std::tuple<decltype(std::end(std::declval<T&>())) ...>;
+    using values = std::tuple<decltype(*std::begin(std::declval<T&>())) ...>;
 
     ZipN(T && ... c)  : c_{std::forward<T>(c) ...} {}
 
