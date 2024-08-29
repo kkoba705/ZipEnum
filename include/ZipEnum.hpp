@@ -60,13 +60,6 @@ inline auto zip(T1 && a, T2 && b) {
     return Zip<T1, T2>(std::forward<T1>(a), std::forward<T2>(b));
 }
 
-
-template <typename ... A, typename ... E, std::size_t ... Index>
-inline bool iterator_cmp(std::tuple<A...> const& a, std::tuple<E...> const& end, 
-    std::index_sequence<Index...>) {
-    return (true && ... && (std::get<Index>(a) != std::get<Index>(end)));
-}
-
 template<typename ... T>
 struct ZipN {
     std::tuple<T...> c_;
@@ -80,8 +73,13 @@ struct ZipN {
     struct iterator {
         iterators i_;
 
+        template<std::size_t ... Index>
+        bool ok(terminators const& e, std::index_sequence<Index...>) const {
+            return (true && ... && (std::get<Index>(i_) != std::get<Index>(e)));
+        }
+
         bool operator!=(terminators const& a) const {
-            return iterator_cmp(i_, a, std::index_sequence_for<T...>{});
+            return ok(a, std::index_sequence_for<T...>{});
         }
 
         values operator*() const {
