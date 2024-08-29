@@ -82,9 +82,9 @@ struct ZipN {
             return ok(a, std::index_sequence_for<T...>{});
         }
 
-        values operator*() const {
+        auto operator*() const {
             return std::apply([](auto && ... args){
-                return values(*args...);
+                return values{*args...};
             }, i_);
         }
 
@@ -95,15 +95,15 @@ struct ZipN {
         }
     };
 
-    iterator begin() {
-        return {std::apply([](auto && ... args){
-            return iterators(std::begin(args)...);
+    auto begin() {
+        return iterator{std::apply([](auto && ... args){
+            return iterators{std::begin(args)...};
         }, c_)};
     }
 
     auto end() {
         return std::apply([](auto && ... args){
-            return terminators(std::end(args)...);
+            return terminators{std::end(args)...};
         }, c_);
     }
 };
@@ -112,7 +112,6 @@ template<typename ... T>
 inline auto zip(T && ... t) {
     return ZipN<T...> {std::forward<T>(t)...};
 }
-
 
 template<class T, class Int = int>
 struct Enumerate {
