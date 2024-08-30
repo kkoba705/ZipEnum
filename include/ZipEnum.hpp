@@ -73,9 +73,9 @@ struct ZipN {
     struct iterator {
         iterators i_;
 
-        template<std::size_t ... Index>
+        template<size_t ... Index>
         bool ok(terminators const& e, std::index_sequence<Index...>) const {
-            return (true && ... && (std::get<Index>(i_) != std::get<Index>(e)));
+            return ((std::get<Index>(i_) != std::get<Index>(e)) && ...);
         }
 
         bool operator!=(terminators const& a) const {
