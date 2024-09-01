@@ -135,7 +135,7 @@ struct Enumerate {
         }
 
         auto operator*() const {
-            return std::pair<int, Value>{c_, *i_};
+            return std::pair<Int, Value>{c_, *i_};
         }
 
         iterator& operator++() {
