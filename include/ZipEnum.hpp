@@ -60,57 +60,51 @@ inline auto zip(T1 && a, T2 && b) {
     return Zip<T1, T2>(std::forward<T1>(a), std::forward<T2>(b));
 }
 
-
-template <typename ... A, typename ... E, std::size_t ... Index>
-inline bool iterator_cmp(std::tuple<A...> const& a, std::tuple<E...> const& end, 
-    std::index_sequence<Index...>) {
-    bool r = true;
-    r = (... && (std::get<Index>(a) != std::get<Index>(end)));
-    return r;
-}
-
 template<typename ... T>
 struct ZipN {
     std::tuple<T...> c_;
 
-    using iterators = std::tuple<decltype(std::begin(std::declval<T>())) ...>;
-    using terminators = std::tuple<decltype(std::end(std::declval<T>())) ...>;
-    using values = std::tuple<decltype(*std::begin(std::declval<T>())) ...>;
+    using iterators = std::tuple<decltype(std::begin(std::declval<T&>())) ...>;
+    using terminators = std::tuple<decltype(std::end(std::declval<T&>())) ...>;
+    using values = std::tuple<decltype(*std::begin(std::declval<T&>())) ...>;
 
     ZipN(T && ... c)  : c_{std::forward<T>(c) ...} {}
-
-    struct terminator {
-        terminators t_;
-    };
 
     struct iterator {
         iterators i_;
 
-        bool operator!=(terminator const& a) const {
-            return iterator_cmp(i_, a.t_, std::index_sequence_for<T...>{});
+        template<size_t ... Index>
+        bool ok(terminators const& e, std::index_sequence<Index...>) const {
+            return ((std::get<Index>(i_) != std::get<Index>(e)) && ...);
+        }
+
+        bool operator!=(terminators const& a) const {
+            return ok(a, std::index_sequence_for<T...>{});
         }
 
         auto operator*() const {
             return std::apply([](auto && ... args){
-                return values(*args...);}, i_);
+                return values{*args...};
+            }, i_);
         }
 
         iterator& operator++() {std::apply([](auto && ... args){
-            ((++args), ...); }, i_);
+                ((++args), ...); 
+            }, i_);
             return *this;
         }
     };
 
-    iterator begin() {
-        return {std::apply([](auto && ... args){
-            return iterators(std::begin(args)...);
+    auto begin() {
+        return iterator{std::apply([](auto && ... args){
+            return iterators{std::begin(args)...};
         }, c_)};
     }
 
-    terminator end() {
-        return {std::apply([](auto && ... args){
-            return terminators(std::end(args)...);
-        }, c_)};
+    auto end() {
+        return std::apply([](auto && ... args){
+            return terminators{std::end(args)...};
+        }, c_);
     }
 };
 
@@ -134,14 +128,12 @@ struct Enumerate {
 
         using Value = decltype(*i_);
 
-        iterator(Iterator i) : i_(i) {}
-
         bool operator!=(Terminator const& a) const {
             return (i_ != a);
         }
 
         auto operator*() const {
-            return std::pair<int, Value>{c_, *i_};
+            return std::pair<Int, Value>{c_, *i_};
         }
 
         iterator& operator++() {
@@ -152,7 +144,7 @@ struct Enumerate {
     };
 
     auto begin() {
-        return iterator(std::begin(c_));
+        return iterator {std::begin(c_), 0};
     }
 
     auto end() {
@@ -167,12 +159,14 @@ inline auto enumerate(T && a) {
 
 template<typename Int = int>
 struct counter {
-    Int c_ = 0;
-    auto begin() {return counter{0};}
-    auto end() {return counter{};}
-    auto operator*() const {return c_;}
-    void operator++() {++c_; }
-    bool operator!=(counter) const {return true;}
+    struct iterator {
+        Int c_ = 0;
+        auto operator*() const {return c_;}
+        void operator++() {++c_; }
+        bool operator!=(iterator) const {return true;}
+    };
+    auto begin() const {return iterator{0};}
+    auto end() const {return iterator{};}
 };
 
 template<typename ... T>

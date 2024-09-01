@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-set(version 1.2.2)
+set(version 1.3.1)
 
 project(zip_enum VERSION ${version}
     DESCRIPTION "zip, enumerate for range-based for statement" 
@@ -14,20 +14,27 @@ target_include_directories(ZipEnum INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 
+##################################
+enable_testing()
+
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(sample sample/sample.cpp)
-target_link_libraries(sample ZipEnum)
+add_executable(test1 test/test1.cpp)
+target_link_libraries(test1 ZipEnum)
 
+add_executable(test2 test/test2.cpp)
+target_link_libraries(test2 ZipEnum)
 
+add_test(NAME run_test_pair COMMAND test1)
+add_test(NAME run_test_tuple COMMAND test2)
+
+##################################
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/ZipEnumConfigVersion.cmake
   VERSION ${version}
   COMPATIBILITY SameMajorVersion )
-
-##################################
 
 install(TARGETS ZipEnum
     EXPORT ZipEnumConfig
