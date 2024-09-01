@@ -19,10 +19,14 @@ enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(sample sample/sample.cpp)
-target_link_libraries(sample ZipEnum)
+add_executable(test1 test/test1.cpp)
+target_link_libraries(test1 ZipEnum)
 
-add_test(NAME run_test COMMAND sample)
+add_executable(test2 test/test2.cpp)
+target_link_libraries(test2 ZipEnum)
+
+add_test(NAME run_test_pair COMMAND test1)
+add_test(NAME run_test_tuple COMMAND test2)
 
 ##################################
 include(CMakePackageConfigHelpers)
