@@ -128,8 +128,6 @@ struct Enumerate {
 
         using Value = decltype(*i_);
 
-        iterator(Iterator i) : i_(i) {}
-
         bool operator!=(Terminator const& a) const {
             return (i_ != a);
         }
@@ -146,7 +144,7 @@ struct Enumerate {
     };
 
     auto begin() {
-        return iterator(std::begin(c_));
+        return iterator {std::begin(c_), 0};
     }
 
     auto end() {
