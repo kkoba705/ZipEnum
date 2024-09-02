@@ -123,8 +123,8 @@ struct Enumerate {
     using Terminator = decltype(std::end(c_));
 
     struct iterator {
+        Int k_ = 0;
         Iterator i_;
-        Int c_ = 0;
 
         using Value = decltype(*i_);
 
@@ -133,18 +133,18 @@ struct Enumerate {
         }
 
         auto operator*() const {
-            return std::pair<Int, Value>{c_, *i_};
+            return std::pair<Int, Value>{k_, *i_};
         }
 
         iterator& operator++() {
+            ++k_;
             ++i_;
-            ++c_;
             return *this;
         }
     };
 
     auto begin() {
-        return iterator {std::begin(c_), 0};
+        return iterator {0, std::begin(c_)};
     }
 
     auto end() {
@@ -156,6 +156,69 @@ template<class T>
 inline auto enumerate(T && a) {
     return Enumerate<T>(std::forward<T>(a));
 }
+
+template<typename Int, typename ... T>
+struct EnumerateN {
+    std::tuple<T...> c_;
+
+    using iterators = std::tuple<decltype(std::begin(std::declval<T&>())) ...>;
+    using terminators = std::tuple<decltype(std::end(std::declval<T&>())) ...>;
+    using values = std::tuple<decltype(*std::begin(std::declval<T&>())) ...>;
+    using value = std::tuple<Int, decltype(*std::begin(std::declval<T&>())) ...>;
+    static inline constexpr auto Seq =  std::index_sequence_for<T...>{};
+
+
+    EnumerateN(T && ... c)  : c_{std::forward<T>(c) ...} {}
+
+    struct iterator {
+        int k_ = 0;
+        iterators i_;
+
+        template<size_t ... Index>
+        bool ok(terminators const& e, std::index_sequence<Index...>) const {
+            return ((std::get<Index>(i_) != std::get<Index>(e)) && ...);
+        }
+
+        bool operator!=(terminators const& a) const {
+            return ok(a, Seq);
+        }
+
+        template<size_t ... Index>
+        auto get_value(std::index_sequence<Index...>) const {
+            return values(*(std::get<Index>(i_)), ...);
+        }
+
+        auto operator*() const {
+            return get_value(Seq);
+        }
+
+        iterator& operator++() {std::apply([](auto && ... args){
+                ((++args), ...); 
+            }, i_);
+            return *this;
+        }
+    };
+
+    auto begin() {
+        return iterator{0, std::apply([](auto && ... args){
+            return iterators{std::begin(args)...};
+        }, c_)};
+    }
+
+    auto end() {
+        return std::apply([](auto && ... args){
+            return terminators{std::end(args)...};
+        }, c_);
+    }
+};
+
+template<typename ... T>
+inline auto enumerate(T && ... t) {
+    return EnumerateN<int, T...> {std::forward<T>(t)...};
+}
+
+
+/*
 
 template<typename Int = int>
 struct counter {
@@ -173,6 +236,6 @@ template<typename ... T>
 inline auto enumerate(T && ... t) {
     return ZipN<counter<>, T...> {{}, std::forward<T>(t)...};
 }
-
+*/
 
 } // end of namespace
