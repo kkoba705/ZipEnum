@@ -163,10 +163,7 @@ struct EnumerateN {
 
     using iterators = std::tuple<decltype(std::begin(std::declval<T&>())) ...>;
     using terminators = std::tuple<decltype(std::end(std::declval<T&>())) ...>;
-    using values = std::tuple<decltype(*std::begin(std::declval<T&>())) ...>;
-    using value = std::tuple<Int, decltype(*std::begin(std::declval<T&>())) ...>;
-    static inline constexpr auto Seq =  std::index_sequence_for<T...>{};
-
+    using values = std::tuple<Int, decltype(*std::begin(std::declval<T&>())) ...>;
 
     EnumerateN(T && ... c)  : c_{std::forward<T>(c) ...} {}
 
@@ -180,16 +177,13 @@ struct EnumerateN {
         }
 
         bool operator!=(terminators const& a) const {
-            return ok(a, Seq);
-        }
-
-        template<size_t ... Index>
-        auto get_value(std::index_sequence<Index...>) const {
-            return values(*(std::get<Index>(i_)), ...);
+            return ok(a, std::index_sequence_for<T...>{});
         }
 
         auto operator*() const {
-            return get_value(Seq);
+            return std::apply([&](auto && ... args){
+                return values{k_, *args...};
+            }, i_);
         }
 
         iterator& operator++() {std::apply([](auto && ... args){
@@ -217,25 +211,6 @@ inline auto enumerate(T && ... t) {
     return EnumerateN<int, T...> {std::forward<T>(t)...};
 }
 
-
-/*
-
-template<typename Int = int>
-struct counter {
-    struct iterator {
-        Int c_ = 0;
-        auto operator*() const {return c_;}
-        void operator++() {++c_; }
-        bool operator!=(iterator) const {return true;}
-    };
-    auto begin() const {return iterator{0};}
-    auto end() const {return iterator{};}
-};
-
-template<typename ... T>
-inline auto enumerate(T && ... t) {
-    return ZipN<counter<>, T...> {{}, std::forward<T>(t)...};
-}
 */
 
 } // end of namespace

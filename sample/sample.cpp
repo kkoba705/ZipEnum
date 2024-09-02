@@ -45,7 +45,7 @@ int main() {
         a += -1;
     }
 
-    for (auto [a, b] : enumerate(A, B)) {
+    for (auto [i, a, b] : enumerate(A, B)) {
         std::cout << "[" << i << "] " << a << ", " << b << std::endl;
     }
 
