@@ -168,7 +168,7 @@ struct EnumerateN {
     EnumerateN(T && ... c)  : c_{std::forward<T>(c) ...} {}
 
     struct iterator {
-        int k_ = 0;
+        Int k_ = 0;
         iterators i_;
 
         template<size_t ... Index>
