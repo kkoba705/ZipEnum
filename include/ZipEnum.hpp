@@ -211,6 +211,4 @@ inline auto enumerate(T && ... t) {
     return EnumerateN<int, T...> {std::forward<T>(t)...};
 }
 
-*/
-
 } // end of namespace
