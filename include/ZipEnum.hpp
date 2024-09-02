@@ -189,6 +189,7 @@ struct EnumerateN {
         iterator& operator++() {std::apply([](auto && ... args){
                 ((++args), ...); 
             }, i_);
+            ++k_;
             return *this;
         }
     };
